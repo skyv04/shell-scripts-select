@@ -1,5 +1,14 @@
 #!/bin/bash
 
+set -e
+
+# if $1 is not provided, show usage, then exit
+if [ -z "$1" ]; then
+    echo -e "\nMissing arguments. Exiting..." >&2
+    echo -e "\nExample usage:\n$0 <osu-micro-benchmarks-(version-number)>\n"
+    exit 1
+fi
+
 log_information() {
     echo "[INFO] $1"
 }
@@ -32,12 +41,12 @@ if [ $(ping_ip $prev_ip) -eq 0 ]; then
     host_ip_2=$prev_ip
 fi
 
-echo "IPs: $host_ip_1, $host_ip_2"
+log_information "IPs: $host_ip_1, $host_ip_2"
 
-cat /host_sys/class/infiniband/*/ports/1/pkeys/0 > /pkey0.txt
-cat /host_sys/class/infiniband/*/ports/1/pkeys/1 > /pkey1.txt
+cat /host_sys/class/infiniband/*/ports/1/pkeys/0 >/pkey0.txt
+cat /host_sys/class/infiniband/*/ports/1/pkeys/1 >/pkey1.txt
 
-mpirun --allow-run-as-root -np 2 -H "$host_ip_1,$host_ip_2" /app/osu-micro-benchmarks-7.0.1/c/mpi/pt2pt/osu_latency > /osulat.txt
+mpirun --allow-run-as-root -np 2 -H "$host_ip_1,$host_ip_2" /app/$1/c/mpi/pt2pt/osu_latency >/osulat.txt
 
 cat /pkey0.txt
 cat /pkey1.txt
