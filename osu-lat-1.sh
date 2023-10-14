@@ -43,9 +43,13 @@ fi
 
 log_information "IPs: $host_ip_1, $host_ip_2"
 
+log_information "Running OSU MPI latency test... (cat /host_sys/class/infiniband/*/ports/1/pkeys/0 >/pkey0.txt)"
 cat /host_sys/class/infiniband/*/ports/1/pkeys/0 >/pkey0.txt
+
+log_information "Running OSU MPI latency test... (cat /host_sys/class/infiniband/*/ports/1/pkeys/1 >/pkey1.txt)"
 cat /host_sys/class/infiniband/*/ports/1/pkeys/1 >/pkey1.txt
 
+log_information "Running OSU MPI latency test... (mpirun --allow-run-as-root -np 2 -H \"$host_ip_1,$host_ip_2\" /app/$1/c/mpi/pt2pt/osu_latency >/osulat.txt)"
 mpirun --allow-run-as-root -np 2 -H "$host_ip_1,$host_ip_2" /app/$1/c/mpi/pt2pt/osu_latency >/osulat.txt
 
 cat /pkey0.txt
