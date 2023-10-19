@@ -20,7 +20,7 @@ ping_ip() {
 }
 
 set_private_key() {
-    az login --identity --no-subscription
+    az login --identity --allow-no-subscriptions
     local -r delimiter=$1
     # Get secret value
     local -r secret=$(az keyvault secret show \
@@ -68,13 +68,13 @@ main() {
     readonly next_ip=$(get_adjacent_ip "$host_ip_1" 1)
     if ping_ip "$next_ip" >/dev/null; then
         log_information "Next IP ($next_ip) responded successfully"
-        readonly host_ip_2=$next_ip
+        local host_ip_2=$next_ip
     fi
 
     readonly prev_ip=$(get_adjacent_ip "$host_ip_1" -1)
     if ping_ip "$prev_ip" >/dev/null; then
         log_information "Previous IP ($prev_ip) responded successfully"
-        readonly host_ip_2=$prev_ip
+        host_ip_2=$prev_ip
     fi
 
     log_information "IPs: $host_ip_1, $host_ip_2"
